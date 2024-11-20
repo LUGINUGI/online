@@ -1,18 +1,66 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Generate Prototype</title>
-  </head>
-  <body>
+<head>
+  <title>Generate Prototype</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .form-container {
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #007bff;
+      border: none;
+      color: white;
+      font-size: 16px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
     <h1>Generate Prototype</h1>
     <form action="/generate-prototype" method="POST">
-      <label for="url">Enter URL:</label>
-      <input type="text" id="url" name="url" required>
-      <br>
-      <label for="identifier">Enter Identifier:</label>
-      <input type="text" id="identifier" name="identifier" required>
-      <br>
-      <button type="submit">Generate</button>
+      <input type="text" id="url" name="url" placeholder="Enter URL" required>
+      <input type="text" id="identifier" name="identifier" placeholder="Enter Identifier" required>
+      <button type="submit">Generate Prototype</button>
     </form>
-  </body>
+  </div>
+</body>
 </html>

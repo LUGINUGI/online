@@ -14,11 +14,25 @@ app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true }));
 
 // Serve static files
-app.use('/prototypes', express.static(path.join(__dirname, 'public', 'prototypes')));
+app.use('/public', express.static(path.join(__dirname, 'public')));
 
 // Render the input form
 app.get('/', (req, res) => {
   res.render('index');
+});
+
+// Render prototype on dynamic URL /name
+app.get('/:name', (req, res) => {
+  const identifier = req.params.name;
+
+  const prototypeDir = path.join(__dirname, 'public', 'prototypes', identifier);
+  const prototypeFile = path.join(prototypeDir, 'index.html');
+
+  if (fs.existsSync(prototypeFile)) {
+    res.sendFile(prototypeFile);
+  } else {
+    res.status(404).send('Prototype not found.');
+  }
 });
 
 // Start the server
@@ -38,7 +52,7 @@ app.post('/generate-prototype', async (req, res) => {
     await generatePrototypePage(identifier, screenshotPath);
 
     // Step 3: Provide the URL to the Sales Team
-    const prototypeUrl = `${req.protocol}://${req.get('host')}/prototypes/${identifier}`;
+    const prototypeUrl = `${req.protocol}://${req.get('host')}/${identifier}`;
     res.send(`Prototype generated! Access it here: <a href="${prototypeUrl}" target="_blank">${prototypeUrl}</a>`);
   } catch (error) {
     console.error('Error generating prototype:', error.message);
@@ -56,7 +70,7 @@ async function captureScreenshot(url, identifier) {
   // Launch Puppeteer
   const browser = await puppeteer.launch({
     headless: true,
-    args: ['--no-sandbox', '--disable-setuid-sandbox'], // Required for Render
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
   });
 
   const page = await browser.newPage();
