@@ -1,27 +1,29 @@
 #!/usr/bin/env bash
 
-# Update package lists and install required dependencies
+# Update and install required dependencies
 apt-get update && apt-get install -y \
-    chromium \
+    wget \
+    ca-certificates \
+    fonts-liberation \
+    libappindicator3-1 \
+    libasound2 \
+    libatk-bridge2.0-0 \
+    libcups2 \
+    libxcomposite1 \
+    libxrandr2 \
     libnss3 \
     libx11-xcb1 \
-    libxcomposite1 \
-    libxdamage1 \
-    libxi6 \
-    libxtst6 \
-    libasound2 \
-    libatk1.0-0 \
-    libcups2 \
-    libdrm2 \
-    libdbus-1-3 \
-    libxrandr2 \
-    libgbm1 \
+    libxss1 \
+    libgbm-dev \
     libgtk-3-0 \
     libpango-1.0-0 \
-    libxshmfence1
+    xdg-utils
 
 # Set Puppeteer's cache directory
 export PUPPETEER_CACHE_DIR=/opt/render/.cache/puppeteer
 
-# Run npm install to install all project dependencies
+# Run npm install to install dependencies
 npm install
+
+# Ensure Puppeteer downloads the correct Chromium
+npx puppeteer install

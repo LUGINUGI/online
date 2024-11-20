@@ -57,9 +57,8 @@ async function captureScreenshot(url, identifier) {
   const browser = await puppeteer.launch({
     headless: true,
     args: ['--no-sandbox', '--disable-setuid-sandbox'], // Required for Render
-    executablePath: '/usr/bin/chromium-browser', // Explicit path for Render's Chromium
   });
-
+  
   const page = await browser.newPage();
   await page.setViewport({ width: 1366, height: 768 });
 
