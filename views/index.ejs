@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>WePly Prototype Generator</title>
-</head>
-<body>
-  <h1>Generate Prototype</h1>
-  <form action="/generate-prototype" method="post">
-    <label for="url">Client Website URL:</label><br>
-    <input type="url" id="url" name="url" required><br><br>
-    <label for="identifier">Client Identifier:</label><br>
-    <input type="text" id="identifier" name="identifier" required><br><br>
-    <button type="submit">Generate Prototype</button>
-  </form>
-</body>
+  <head>
+    <title>Generate Prototype</title>
+  </head>
+  <body>
+    <h1>Generate Prototype</h1>
+    <form action="/generate-prototype" method="POST">
+      <label for="url">Enter URL:</label>
+      <input type="text" id="url" name="url" required>
+      <br>
+      <label for="identifier">Enter Identifier:</label>
+      <input type="text" id="identifier" name="identifier" required>
+      <br>
+      <button type="submit">Generate</button>
+    </form>
+  </body>
 </html>
