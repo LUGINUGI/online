@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+# Update package lists and install required dependencies
 apt-get update && apt-get install -y \
     chromium \
     libnss3 \
@@ -18,3 +19,9 @@ apt-get update && apt-get install -y \
     libgtk-3-0 \
     libpango-1.0-0 \
     libxshmfence1
+
+# Set Puppeteer's cache directory
+export PUPPETEER_CACHE_DIR=/opt/render/.cache/puppeteer
+
+# Run npm install to install all project dependencies
+npm install
