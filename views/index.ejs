@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Generate Prototype</title>
+  <title>Testa Weply</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -20,7 +20,7 @@
       border-radius: 8px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       width: 100%;
-      max-width: 400px;
+      max-width: 500px;
     }
 
     h1 {
@@ -51,16 +51,38 @@
     button:hover {
       background-color: #0056b3;
     }
+
+    .info-bar {
+      background-color: #f1c40f;
+      padding: 10px;
+      margin-top: 20px;
+      text-align: center;
+      color: white;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
   <div class="form-container">
-    <h1>Generate Prototype</h1>
+    <h1>Testa Weply</h1>
     <form action="/generate-prototype" method="POST">
       <input type="text" id="url" name="url" placeholder="Enter URL" required>
-      <input type="text" id="identifier" name="identifier" placeholder="Enter Identifier" required>
+      <input type="text" id="identifier" name="identifier" placeholder="Enter Name (Subpage)" required>
       <button type="submit">Generate Prototype</button>
     </form>
+    <div class="info-bar" style="display: none;" id="infoBar">Please wait, redirecting in 10 seconds...</div>
   </div>
+
+  <script>
+    // Display the info bar after the form is submitted
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function (e) {
+      const infoBar = document.getElementById('infoBar');
+      infoBar.style.display = 'block';
+      setTimeout(() => {
+        infoBar.style.display = 'none'; // Hide the info bar after 10 seconds
+      }, 10000);
+    });
+  </script>
 </body>
 </html>

@@ -5,7 +5,7 @@ const fs = require('fs');
 const fsPromises = require('fs').promises;
 
 const app = express();
-const port = process.env.PORT || 3000; // Use dynamic port for deployment
+const port = process.env.PORT || 3000;
 
 // Set EJS as templating engine
 app.set('view engine', 'ejs');
@@ -53,7 +53,9 @@ app.post('/generate-prototype', async (req, res) => {
 
     // Step 3: Provide the URL to the Sales Team
     const prototypeUrl = `${req.protocol}://${req.get('host')}/${identifier}`;
-    res.send(`Prototype generated! Access it here: <a href="${prototypeUrl}" target="_blank">${prototypeUrl}</a>`);
+
+    // Redirect with a 10-second delay
+    res.render('redirect', { prototypeUrl });
   } catch (error) {
     console.error('Error generating prototype:', error.message);
     res.status(500).send('An error occurred while generating the prototype.');
@@ -97,7 +99,7 @@ async function generatePrototypePage(identifier, screenshotPath) {
   const prototypeFile = path.join(prototypeDir, 'index.html');
 
   // Relative path for the screenshot in the HTML file
-  const screenshotRelativePath = 'screenshot.png';
+  const screenshotRelativePath = `/public/prototypes/${identifier}/screenshot.png`;
 
   // Your chat widget code
   const chatWidgetCode = `
