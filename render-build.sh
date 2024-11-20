@@ -19,11 +19,10 @@ apt-get update && apt-get install -y \
     libpango-1.0-0 \
     xdg-utils
 
-# Set Puppeteer's cache directory
+# Set Puppeteer's cache directory and force Chromium download
 export PUPPETEER_CACHE_DIR=/opt/render/.cache/puppeteer
+export PUPPETEER_SKIP_DOWNLOAD=false
 
-# Run npm install to install dependencies
+# Install dependencies and ensure Chromium is downloaded
 npm install
-
-# Ensure Puppeteer downloads the correct Chromium
 npx puppeteer install
