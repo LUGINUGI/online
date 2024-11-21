@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Update and install required dependencies
+# Update and install required dependencies including Chromium
 apt-get update && apt-get install -y \
+    chromium-browser \
     wget \
     ca-certificates \
     fonts-liberation \
@@ -19,12 +20,5 @@ apt-get update && apt-get install -y \
     libpango-1.0-0 \
     xdg-utils
 
-# Set Puppeteer's cache directory to a persistent location and ensure Chromium download
-export PUPPETEER_CACHE_DIR=/opt/render/.cache/puppeteer
-export PUPPETEER_SKIP_DOWNLOAD=false
-
-# Install dependencies
+# Install Node dependencies
 npm install
-
-# Force Puppeteer to install the correct version of Chromium
-npx puppeteer install

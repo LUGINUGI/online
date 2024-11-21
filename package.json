@@ -4,7 +4,7 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "postinstall": "npx puppeteer install",
+    "postinstall": "apt-get update && apt-get install -y chromium-browser",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -14,7 +14,7 @@
   "dependencies": {
     "ejs": "^3.1.10",
     "express": "^4.21.1",
-    "puppeteer": "^23.8.0",
-    "node-cron": "^3.0.2"
+    "node-cron": "^3.0.2",
+    "puppeteer-core": "^23.9.0"
   }
 }

@@ -1,6 +1,6 @@
 const express = require('express');
 const path = require('path');
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-core'); // Use puppeteer-core
 const fs = require('fs');
 const fsPromises = require('fs').promises;
 const cron = require('node-cron');
@@ -23,8 +23,9 @@ let browser;
 // Function to launch Puppeteer with retry logic if it fails
 const launchBrowser = async () => {
   try {
-    // Attempt to launch Puppeteer browser
+    // Attempt to launch Puppeteer browser using system Chromium
     browser = await puppeteer.launch({
+      executablePath: process.env.CHROME_PATH || '/usr/bin/chromium-browser', // Use system-installed Chromium
       headless: true,
       args: ['--no-sandbox', '--disable-setuid-sandbox']
     });
@@ -33,16 +34,17 @@ const launchBrowser = async () => {
     console.error('Error launching Puppeteer browser:', error.message);
     console.log('Attempting to reinstall Chromium...');
 
-    // Attempt to reinstall Chromium using puppeteer install
-    exec('npx puppeteer install', async (installError) => {
+    // Attempt to reinstall Chromium using apt-get
+    exec('apt-get update && apt-get install -y chromium-browser', async (installError) => {
       if (installError) {
         console.error('Failed to install Chromium:', installError.message);
         process.exit(1);
       } else {
         console.log('Chromium installed successfully, retrying browser launch...');
         try {
-          // Retry launching Puppeteer
+          // Retry launching Puppeteer with the updated Chromium path
           browser = await puppeteer.launch({
+            executablePath: process.env.CHROME_PATH || '/usr/bin/chromium-browser',
             headless: true,
             args: ['--no-sandbox', '--disable-setuid-sandbox']
           });
