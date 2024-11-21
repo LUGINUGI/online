@@ -4,7 +4,7 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "postinstall": "puppeteer install",
+    "postinstall": "npx puppeteer install",  // This installs Chromium after dependency install
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -14,7 +14,7 @@
   "dependencies": {
     "ejs": "^3.1.10",
     "express": "^4.21.1",
-    "node-cron": "^3.0.3",
-    "puppeteer": "^23.8.0"
+    "puppeteer": "^23.8.0",
+    "node-cron": "^3.0.2"
   }
 }

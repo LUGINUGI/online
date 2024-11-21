@@ -4,6 +4,7 @@ const puppeteer = require('puppeteer');
 const fs = require('fs');
 const fsPromises = require('fs').promises;
 const cron = require('node-cron');
+const { exec } = require('child_process');
 
 const app = express();
 const port = process.env.PORT || 3000; // Use dynamic port for deployment
@@ -17,22 +18,46 @@ app.use(express.urlencoded({ extended: true }));
 // Serve static files
 app.use('/public', express.static(path.join(__dirname, 'public')));
 
-// Global Puppeteer browser instance
 let browser;
 
-// Start the browser when the server starts
-(async () => {
+// Function to launch Puppeteer with retry logic if it fails
+const launchBrowser = async () => {
   try {
+    // Attempt to launch Puppeteer browser
     browser = await puppeteer.launch({
       headless: true,
       args: ['--no-sandbox', '--disable-setuid-sandbox']
     });
-    console.log('Puppeteer browser launched');
+    console.log('Puppeteer browser launched successfully');
   } catch (error) {
     console.error('Error launching Puppeteer browser:', error.message);
-    process.exit(1); // Exit if browser launch fails
+    console.log('Attempting to reinstall Chromium...');
+
+    // Attempt to reinstall Chromium using puppeteer install
+    exec('npx puppeteer install', async (installError) => {
+      if (installError) {
+        console.error('Failed to install Chromium:', installError.message);
+        process.exit(1);
+      } else {
+        console.log('Chromium installed successfully, retrying browser launch...');
+        try {
+          // Retry launching Puppeteer
+          browser = await puppeteer.launch({
+            headless: true,
+            args: ['--no-sandbox', '--disable-setuid-sandbox']
+          });
+          console.log('Puppeteer browser launched after reinstall');
+        } catch (retryError) {
+          console.error('Failed to launch Puppeteer after reinstall:', retryError.message);
+          process.exit(1);
+        }
+      }
+    });
   }
-})();
+};
+
+// Launch browser at the start of the server
+launchBrowser();
 
 // Render the input form
 app.get('/', (req, res) => {
