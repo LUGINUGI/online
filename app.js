@@ -1,10 +1,9 @@
 const express = require('express');
 const path = require('path');
-const puppeteer = require('puppeteer-core'); // Use puppeteer-core
+const puppeteer = require('puppeteer-core');
 const fs = require('fs');
 const fsPromises = require('fs').promises;
 const cron = require('node-cron');
-const { exec } = require('child_process');
 
 const app = express();
 const port = process.env.PORT || 3000; // Use dynamic port for deployment
@@ -23,38 +22,16 @@ let browser;
 // Function to launch Puppeteer with retry logic if it fails
 const launchBrowser = async () => {
   try {
-    // Attempt to launch Puppeteer browser using system Chromium
+    // Attempt to launch Puppeteer using system-installed Chromium
     browser = await puppeteer.launch({
-      executablePath: process.env.CHROME_PATH || '/usr/bin/chromium-browser', // Use system-installed Chromium
+      executablePath: process.env.CHROME_PATH || '/usr/bin/chromium-browser', // This is the path typically available in container environments
       headless: true,
       args: ['--no-sandbox', '--disable-setuid-sandbox']
     });
     console.log('Puppeteer browser launched successfully');
   } catch (error) {
     console.error('Error launching Puppeteer browser:', error.message);
-    console.log('Attempting to reinstall Chromium...');
-
-    // Attempt to reinstall Chromium using apt-get
-    exec('apt-get update && apt-get install -y chromium-browser', async (installError) => {
-      if (installError) {
-        console.error('Failed to install Chromium:', installError.message);
-        process.exit(1);
-      } else {
-        console.log('Chromium installed successfully, retrying browser launch...');
-        try {
-          // Retry launching Puppeteer with the updated Chromium path
-          browser = await puppeteer.launch({
-            executablePath: process.env.CHROME_PATH || '/usr/bin/chromium-browser',
-            headless: true,
-            args: ['--no-sandbox', '--disable-setuid-sandbox']
-          });
-          console.log('Puppeteer browser launched after reinstall');
-        } catch (retryError) {
-          console.error('Failed to launch Puppeteer after reinstall:', retryError.message);
-          process.exit(1);
-        }
-      }
-    });
+    process.exit(1);
   }
 };
 
@@ -183,12 +160,9 @@ async function deleteAllPrototypes() {
   const prototypesDir = path.join(__dirname, 'public', 'prototypes');
 
   try {
-    // Check if the prototypes directory exists
     if (fs.existsSync(prototypesDir)) {
-      // Read all files and directories inside prototypes directory
       const files = await fsPromises.readdir(prototypesDir);
 
-      // Loop through each file/directory and remove it
       for (const file of files) {
         const currentPath = path.join(prototypesDir, file);
         await fsPromises.rm(currentPath, { recursive: true, force: true });
