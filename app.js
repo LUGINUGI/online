@@ -3,6 +3,7 @@ const path = require('path');
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 const fsPromises = require('fs').promises;
+const cron = require('node-cron');
 
 const app = express();
 const port = process.env.PORT || 3000; // Use dynamic port for deployment
@@ -15,6 +16,23 @@ app.use(express.urlencoded({ extended: true }));
 
 // Serve static files
 app.use('/public', express.static(path.join(__dirname, 'public')));
+
+// Global Puppeteer browser instance
+let browser;
+
+// Start the browser when the server starts
+(async () => {
+  try {
+    browser = await puppeteer.launch({
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
+    });
+    console.log('Puppeteer browser launched');
+  } catch (error) {
+    console.error('Error launching Puppeteer browser:', error.message);
+    process.exit(1); // Exit if browser launch fails
+  }
+})();
 
 // Render the input form
 app.get('/', (req, res) => {
@@ -34,7 +52,7 @@ app.post('/generate-prototype', async (req, res) => {
     await generatePrototypePage(identifier, screenshotPath);
 
     // Step 3: Redirect to the prototype page after creation
-    const prototypeUrl = `${req.protocol}://${req.get('host')}/${identifier}`;
+    const prototypeUrl = `${req.protocol}://${req.get('host')}/public/prototypes/${identifier}/index.html`;
     res.redirect(prototypeUrl);  // Redirect directly to the prototype page
   } catch (error) {
     console.error('Error generating prototype:', error.message);
@@ -42,6 +60,7 @@ app.post('/generate-prototype', async (req, res) => {
   }
 });
 
+// Function to capture screenshot using the shared browser instance
 async function captureScreenshot(url, identifier) {
   const screenshotDir = path.join(__dirname, 'public', 'prototypes', identifier);
   const screenshotPath = path.join(screenshotDir, 'screenshot.png');
@@ -49,13 +68,11 @@ async function captureScreenshot(url, identifier) {
   // Create directory if it doesn't exist
   await fsPromises.mkdir(screenshotDir, { recursive: true });
 
-  // Launch Puppeteer
-  const browser = await puppeteer.launch({
-    headless: true,
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
-  });
+  if (!browser) {
+    throw new Error('Puppeteer browser is not initialized');
+  }
 
-  const page = await browser.newPage();
+  const page = await browser.newPage(); // Use the shared browser instance to create a new page
   await page.setViewport({ width: 1366, height: 768 });
 
   try {
@@ -68,12 +85,13 @@ async function captureScreenshot(url, identifier) {
     console.error(`Error capturing screenshot for ${url}:`, error.message);
     throw new Error('Failed to capture screenshot.');
   } finally {
-    await browser.close();
+    await page.close(); // Close the page but keep the browser instance open
   }
 
   return screenshotPath;
 }
 
+// Function to generate the prototype page
 async function generatePrototypePage(identifier, screenshotPath) {
   const prototypeDir = path.join(__dirname, 'public', 'prototypes', identifier);
   const prototypeFile = path.join(prototypeDir, 'index.html');
@@ -123,3 +141,39 @@ async function generatePrototypePage(identifier, screenshotPath) {
   // Write the HTML file
   await fsPromises.writeFile(prototypeFile, htmlContent);
 }
+
+// Function to delete all prototype directories
+async function deleteAllPrototypes() {
+  const prototypesDir = path.join(__dirname, 'public', 'prototypes');
+
+  try {
+    // Check if the prototypes directory exists
+    if (fs.existsSync(prototypesDir)) {
+      // Read all files and directories inside prototypes directory
+      const files = await fsPromises.readdir(prototypesDir);
+
+      // Loop through each file/directory and remove it
+      for (const file of files) {
+        const currentPath = path.join(prototypesDir, file);
+        await fsPromises.rm(currentPath, { recursive: true, force: true });
+      }
+
+      console.log('All prototype directories deleted successfully.');
+    }
+  } catch (error) {
+    console.error('Error deleting prototype directories:', error.message);
+  }
+}
+
+// Schedule job to delete all pages at 18:00 Danish time every day
+cron.schedule('0 18 * * *', () => {
+  console.log('Running daily cleanup task at 18:00 Danish time...');
+  deleteAllPrototypes();
+}, {
+  timezone: "Europe/Copenhagen"
+});
+
+// Start the server
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
