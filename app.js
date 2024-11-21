@@ -126,9 +126,18 @@ async function generatePrototypePage(identifier, screenshotPath) {
 
   // Your chat widget code
   const chatWidgetCode = `
-    <!-- Replace this with your actual chat widget script -->
     <script>
-      console.log('Chat widget would be here.');
+        // Helper function to load the chat widget once
+        const loadChatWidget = () => {
+            if (!document.querySelector("script[src='https://app.weply.chat/widget/9930edb31407e5ba09a5f1df560478ae']")) {
+                const chatScript = document.createElement("script");
+                chatScript.src = "https://app.weply.chat/widget/9930edb31407e5ba09a5f1df560478ae";
+                chatScript.async = true;
+                document.body.appendChild(chatScript);
+                console.log("Chat widget loaded.");
+            }
+        };
+        loadChatWidget();
     </script>
   `;
 

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Testa Weply</title>
+  <title>Weply</title> <!-- Removed the "Testa Weply" title -->
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -33,6 +33,7 @@
     h1 {
       font-size: 24px;
       margin-bottom: 20px;
+      display: none; /* Hidden to remove title */
     }
 
     input {
@@ -46,7 +47,7 @@
     button {
       width: 100%;
       padding: 12px;
-      background-color: #007bff;
+      background-color: #007bff; /* Blue color matching the Weply logo */
       border: none;
       color: white;
       font-size: 16px;
@@ -56,15 +57,6 @@
 
     button:hover {
       background-color: #0056b3;
-    }
-
-    .info-bar {
-      background-color: #f1c40f;
-      padding: 10px;
-      margin-top: 20px;
-      text-align: center;
-      color: white;
-      font-weight: bold;
     }
 
     /* Responsive Design for Mobile */
@@ -117,7 +109,7 @@
       border-radius: 50%;
       width: 50px;
       height: 50px;
-      animation: spin 1s linear infinite;
+      animation: spin 2s linear infinite; /* Slowed down the animation to 2s */
     }
 
     @keyframes spin {
@@ -129,11 +121,10 @@
 <body>
   <div class="form-container">
     <img src="https://testaweply.se/weply.png" alt="Weply Logo">
-    <h1>Testa Weply</h1>
     <form id="prototype-form" action="/generate-prototype" method="POST">
-      <input type="text" id="url" name="url" placeholder="Enter URL" required>
-      <input type="text" id="identifier" name="identifier" placeholder="Enter Name (Subpage)" required>
-      <button type="submit">Generate Prototype</button>
+      <input type="text" id="url" name="url" placeholder="Indtasta hemsida" required>
+      <input type="text" id="identifier" name="identifier" placeholder="Indtasta namn (undersida)" required>
+      <button type="submit">Se din testsida</button>
     </form>
   </div>
 
@@ -141,7 +132,7 @@
   <div id="loading-overlay" class="loading-overlay">
     <div class="loading-message">
       <div class="spinner"></div>
-      <p>Generating your page, please wait 5 seconds...</p>
+      <p>Du är snart redo att få fler kunder. En agent granskar din sida.<br>Tack för ditt tålamod, det tar 5–10 sekunder.</p>
     </div>
   </div>
 
@@ -151,8 +142,14 @@
     const loadingOverlay = document.getElementById('loading-overlay');
 
     form.addEventListener('submit', function(event) {
-      // Prevent the default form submission so we can show the loading animation first
       loadingOverlay.style.display = 'flex';
+    });
+
+    // Hide the loading animation when the user presses the back button
+    window.addEventListener("pageshow", function(event) {
+      if (event.persisted) {
+        loadingOverlay.style.display = 'none';
+      }
     });
   </script>
 </body>
