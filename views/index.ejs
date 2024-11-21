@@ -25,6 +25,11 @@
       text-align: center;
     }
 
+    .form-container img {
+      width: 300px; /* Adjusted to double the original width (150px) */
+      margin-bottom: 20px;
+    }
+
     h1 {
       font-size: 24px;
       margin-bottom: 20px;
@@ -67,7 +72,7 @@
       body {
         padding: 10px;
       }
-      
+
       .form-container {
         padding: 20px;
         max-width: 100%;
@@ -81,17 +86,74 @@
         padding: 15px;
       }
     }
+
+    /* Styles for the Loading Animation */
+    .loading-overlay {
+      display: none; /* Hidden by default */
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .loading-message {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      font-size: 18px;
+    }
+
+    .spinner {
+      margin: 15px auto;
+      border: 5px solid #f3f3f3; /* Light grey */
+      border-top: 5px solid #007bff; /* Blue */
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
   </style>
 </head>
 <body>
-  <img src="https://testaweply.se/weply.png" alt="Weply Logo" style="width: 150px; margin-bottom: 20px;">
   <div class="form-container">
+    <img src="https://testaweply.se/weply.png" alt="Weply Logo">
     <h1>Testa Weply</h1>
-    <form action="/generate-prototype" method="POST">
+    <form id="prototype-form" action="/generate-prototype" method="POST">
       <input type="text" id="url" name="url" placeholder="Enter URL" required>
       <input type="text" id="identifier" name="identifier" placeholder="Enter Name (Subpage)" required>
       <button type="submit">Generate Prototype</button>
     </form>
   </div>
+
+  <!-- Loading Animation Overlay -->
+  <div id="loading-overlay" class="loading-overlay">
+    <div class="loading-message">
+      <div class="spinner"></div>
+      <p>Generating your page, please wait 5 seconds...</p>
+    </div>
+  </div>
+
+  <script>
+    // JavaScript to show loading animation when form is submitted
+    const form = document.getElementById('prototype-form');
+    const loadingOverlay = document.getElementById('loading-overlay');
+
+    form.addEventListener('submit', function(event) {
+      // Prevent the default form submission so we can show the loading animation first
+      loadingOverlay.style.display = 'flex';
+    });
+  </script>
 </body>
 </html>
