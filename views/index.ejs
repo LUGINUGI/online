@@ -12,6 +12,7 @@
       align-items: center;
       height: 100vh;
       margin: 0;
+      flex-direction: column;
     }
 
     .form-container {
@@ -21,10 +22,10 @@
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       width: 100%;
       max-width: 500px;
+      text-align: center;
     }
 
     h1 {
-      text-align: center;
       font-size: 24px;
       margin-bottom: 20px;
     }
@@ -60,9 +61,30 @@
       color: white;
       font-weight: bold;
     }
+
+    /* Responsive Design for Mobile */
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+      
+      .form-container {
+        padding: 20px;
+        max-width: 100%;
+      }
+
+      h1 {
+        font-size: 20px;
+      }
+
+      input, button {
+        padding: 15px;
+      }
+    }
   </style>
 </head>
 <body>
+  <img src="https://testaweply.se/weply.png" alt="Weply Logo" style="width: 150px; margin-bottom: 20px;">
   <div class="form-container">
     <h1>Testa Weply</h1>
     <form action="/generate-prototype" method="POST">
@@ -70,19 +92,6 @@
       <input type="text" id="identifier" name="identifier" placeholder="Enter Name (Subpage)" required>
       <button type="submit">Generate Prototype</button>
     </form>
-    <div class="info-bar" style="display: none;" id="infoBar">Please wait, redirecting in 10 seconds...</div>
   </div>
-
-  <script>
-    // Display the info bar after the form is submitted
-    const form = document.querySelector('form');
-    form.addEventListener('submit', function (e) {
-      const infoBar = document.getElementById('infoBar');
-      infoBar.style.display = 'block';
-      setTimeout(() => {
-        infoBar.style.display = 'none'; // Hide the info bar after 10 seconds
-      }, 10000);
-    });
-  </script>
 </body>
 </html>

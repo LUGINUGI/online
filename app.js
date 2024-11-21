@@ -5,7 +5,7 @@ const fs = require('fs');
 const fsPromises = require('fs').promises;
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3000; // Use dynamic port for deployment
 
 // Set EJS as templating engine
 app.set('view engine', 'ejs');
@@ -21,25 +21,7 @@ app.get('/', (req, res) => {
   res.render('index');
 });
 
-// Render prototype on dynamic URL /name
-app.get('/:name', (req, res) => {
-  const identifier = req.params.name;
-
-  const prototypeDir = path.join(__dirname, 'public', 'prototypes', identifier);
-  const prototypeFile = path.join(prototypeDir, 'index.html');
-
-  if (fs.existsSync(prototypeFile)) {
-    res.sendFile(prototypeFile);
-  } else {
-    res.status(404).send('Prototype not found.');
-  }
-});
-
-// Start the server
-app.listen(port, () => {
-  console.log(`App listening at http://localhost:${port}`);
-});
-
+// Generate prototype and redirect directly
 app.post('/generate-prototype', async (req, res) => {
   const url = req.body.url;
   const identifier = req.body.identifier;
@@ -51,11 +33,9 @@ app.post('/generate-prototype', async (req, res) => {
     // Step 2: Generate Prototype Page
     await generatePrototypePage(identifier, screenshotPath);
 
-    // Step 3: Provide the URL to the Sales Team
+    // Step 3: Redirect to the prototype page after creation
     const prototypeUrl = `${req.protocol}://${req.get('host')}/${identifier}`;
-
-    // Redirect with a 10-second delay
-    res.render('redirect', { prototypeUrl });
+    res.redirect(prototypeUrl);  // Redirect directly to the prototype page
   } catch (error) {
     console.error('Error generating prototype:', error.message);
     res.status(500).send('An error occurred while generating the prototype.');
