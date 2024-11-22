@@ -1,0 +1,43 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Prototype for a'</title>
+      <style>
+        body, html { margin: 0; padding: 0; height: 100%; }
+        .background { 
+            background-image: url('/public/prototypes/a'/screenshot.png'); 
+            background-size: cover; 
+            height: 100%; 
+            position: relative;
+        }
+        .chat-widget { 
+            position: absolute; 
+            bottom: 0; 
+            right: 0; 
+        }
+      </style>
+    </head>
+    <body>
+      <div class="background">
+        <div class="chat-widget">
+          
+    <script>
+        // Helper function to load the chat widget once
+        const loadChatWidget = () => {
+            if (!document.querySelector("script[src='https://app.weply.chat/widget/9930edb31407e5ba09a5f1df560478ae']")) {
+                const chatScript = document.createElement("script");
+                chatScript.src = "https://app.weply.chat/widget/9930edb31407e5ba09a5f1df560478ae";
+                chatScript.async = true;
+                document.body.appendChild(chatScript);
+                console.log("Chat widget loaded.");
+            }
+        };
+        loadChatWidget();
+    </script>
+  
+        </div>
+      </div>
+    </body>
+    </html>
+  
