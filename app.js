@@ -1,6 +1,6 @@
 const express = require('express');
 const path = require('path');
-const puppeteer = require('puppeteer-core');
+const puppeteer = require('puppeteer');
 const fs = require('fs');
 const fsPromises = require('fs').promises;
 const cron = require('node-cron');
@@ -28,7 +28,7 @@ const launchBrowser = async () => {
         '--no-sandbox',
         '--disable-setuid-sandbox'
       ],
-      // executablePath: '/usr/bin/chromium-browser'
+      headless: "new"
     });
     console.log('Puppeteer browser launched successfully');
   } catch (error) {
