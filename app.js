@@ -17,6 +17,9 @@ app.use(express.urlencoded({ extended: true }));
 // Serve static files
 app.use('/public', express.static(path.join(__dirname, 'public')));
 
+// Add this near the top of your app.js with other middleware
+app.use(express.static(__dirname));
+
 let browser;
 
 // Function to launch Puppeteer with retry logic if it fails
@@ -47,20 +50,21 @@ app.get('/', (req, res) => {
 
 // Generate prototype and redirect directly
 app.post('/generate-prototype', async (req, res) => {
-  const { url, identifier } = req.body;
-
   try {
+    const { url, identifier } = req.body;
+    console.log('Received request:', { url, identifier }); // Debug log
+
     // Step 1: Capture Screenshot
     const screenshotPath = await captureScreenshot(url, identifier);
 
     // Step 2: Generate Prototype Page
     await generatePrototypePage(identifier, screenshotPath);
 
-    // Instead of complex routing, simply redirect to /{identifier}
-    res.redirect(`/${identifier}`);
+    console.log('Redirecting to:', `/${identifier}`); // Debug log
+    return res.redirect(`/${identifier}`);
   } catch (error) {
-    console.error('Error generating prototype:', error.message);
-    res.status(500).send('An error occurred while generating the prototype.');
+    console.error('Error:', error);
+    res.status(500).send('Ett fel uppstod');
   }
 });
 
@@ -186,6 +190,8 @@ cron.schedule('0 18 * * *', () => {
 // Add a simple dynamic route to handle all subpages
 app.get('/:identifier', async (req, res) => {
   const { identifier } = req.params;
+  console.log('Accessing identifier:', identifier); // Debug log
+  
   // Serve the prototype for this identifier
   // ... your existing code to show the prototype ...
 });
