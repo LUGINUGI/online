@@ -47,8 +47,7 @@ app.get('/', (req, res) => {
 
 // Generate prototype and redirect directly
 app.post('/generate-prototype', async (req, res) => {
-  const url = req.body.url;
-  const identifier = req.body.identifier;
+  const { url, identifier } = req.body;
 
   try {
     // Step 1: Capture Screenshot
@@ -57,9 +56,8 @@ app.post('/generate-prototype', async (req, res) => {
     // Step 2: Generate Prototype Page
     await generatePrototypePage(identifier, screenshotPath);
 
-    // Step 3: Redirect to the prototype page after creation
-    const prototypeUrl = `${req.protocol}://${req.get('host')}/public/prototypes/${identifier}/index.html`;
-    res.redirect(prototypeUrl);  // Redirect directly to the prototype page
+    // Instead of complex routing, simply redirect to /{identifier}
+    res.redirect(`/${identifier}`);
   } catch (error) {
     console.error('Error generating prototype:', error.message);
     res.status(500).send('An error occurred while generating the prototype.');
@@ -183,6 +181,13 @@ cron.schedule('0 18 * * *', () => {
   deleteAllPrototypes();
 }, {
   timezone: "Europe/Copenhagen"
+});
+
+// Add a simple dynamic route to handle all subpages
+app.get('/:identifier', async (req, res) => {
+  const { identifier } = req.params;
+  // Serve the prototype for this identifier
+  // ... your existing code to show the prototype ...
 });
 
 // Start the server
