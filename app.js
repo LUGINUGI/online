@@ -24,9 +24,11 @@ const launchBrowser = async () => {
   try {
     // Attempt to launch Puppeteer using system-installed Chromium
     browser = await puppeteer.launch({
-      executablePath: process.env.CHROME_PATH || '/usr/bin/chromium-browser', // This is the path typically available in container environments
-      headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox'
+      ],
+      // executablePath: '/usr/bin/chromium-browser'
     });
     console.log('Puppeteer browser launched successfully');
   } catch (error) {
