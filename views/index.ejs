@@ -121,13 +121,23 @@
             </div>
             
             <div class="form-group">
-                <label for="identifier">Unikt ID</label>
+                <label for="identifier">Undersida</label>
                 <input type="text" id="identifier" name="identifier" required 
-                       placeholder="mitt-projekt">
+                       placeholder="namn">
             </div>
             
             <button type="submit">Skapa Prototyp</button>
         </form>
+
+        <div id="thankYouMessage" style="display: none; text-align: center; margin-top: 1rem; color: #666;">
+            Tack! Du kommer att omdirigeras om 5 sekunder.
+        </div>
+
+        <script>
+        document.querySelector('form').addEventListener('submit', function(e) {
+            document.getElementById('thankYouMessage').style.display = 'block';
+        });
+        </script>
     </div>
 </body>
 </html>
